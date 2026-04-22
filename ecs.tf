@@ -8,7 +8,7 @@ resource "aws_ecs_cluster" "main" {
 
 # ----------------------------------------
 # ECS Task Definition
-# Represents processing step
+# Batch-style processing task
 # ----------------------------------------
 resource "aws_ecs_task_definition" "processor" {
   family                   = "${var.project_name}-processor"
@@ -17,7 +17,7 @@ resource "aws_ecs_task_definition" "processor" {
   cpu                      = var.ecs_task_cpu
   memory                   = var.ecs_task_memory
 
-  # Task will use the same IAM role (later wired)
+  # ONE IAM role reused everywhere
   execution_role_arn = var.iam_role_arn
   task_role_arn      = var.iam_role_arn
 
@@ -26,6 +26,19 @@ resource "aws_ecs_task_definition" "processor" {
       name      = "processor"
       image     = var.ecs_container_image
       essential = true
+
+      # Ensure task runs and exits cleanly
+      command = ["sh", "-c", "echo ECS task completed successfully && sleep 10"]
+
+      # Optional but recommended logging
+      logConfiguration = {
+        logDriver = "awslogs"
+        options = {
+          awslogs-group         = "/ecs/${var.project_name}"
+          awslogs-region        = var.aws_region
+          awslogs-stream-prefix = "ecs"
+        }
+      }
     }
   ])
 }

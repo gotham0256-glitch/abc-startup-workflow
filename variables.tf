@@ -8,7 +8,7 @@ variable "aws_region" {
   default = "ap-south-1"
 }
 
-# Common name prefix for tagging
+# Common name prefix for all resources
 variable "project_name" {
   type    = string
   default = "abc-startup"
@@ -19,13 +19,13 @@ variable "project_name" {
 # Networking
 # ------------------------
 
-# CIDR for VPC
+# CIDR block for VPC
 variable "vpc_cidr" {
   type    = string
   default = "10.0.0.0/16"
 }
 
-# CIDR for subnet
+# CIDR block for subnet
 variable "subnet_cidr" {
   type    = string
   default = "10.0.1.0/24"
@@ -36,7 +36,7 @@ variable "subnet_cidr" {
 # EC2 (Pre‑processing)
 # ------------------------
 
-# AMI for EC2
+# AMI for EC2 instance
 variable "ec2_ami" {
   type    = string
   default = "ami-05d2d839d4f73aafb"
@@ -71,24 +71,26 @@ variable "ecs_task_memory" {
   default = "512"
 }
 
-# Container image for ECS processing task
-# Use Amazon ECR public mirror (no Docker Hub limits)
+# ECS container image (stable, no Docker Hub limits)
 variable "ecs_container_image" {
   type    = string
   default = "public.ecr.aws/nginx/nginx:stable"
 }
 
+
 # ------------------------
-# IAM (Single role reused)
+# IAM (ONE role used everywhere)
 # ------------------------
 
-# IAM role ARN reused by:
-# - GitHub Actions
-# - ECS task
+# Single IAM role reused by:
+# - GitHub Actions (deploy/destroy)
+# - EC2
+# - ECS tasks
 # - Step Functions
+# - EventBridge
 variable "iam_role_arn" {
-  type        = string
-  description = "Single IAM role ARN reused across GitHub, ECS, and Step Functions"
+  type    = string
+  default = "arn:aws:iam::165742852730:role/GitHubActions-IaC-Deployer"
 }
 
 
@@ -96,7 +98,7 @@ variable "iam_role_arn" {
 # Step Functions
 # ------------------------
 
-# Step Functions state machine name
+# Step Functions workflow name
 variable "step_function_name" {
   type    = string
   default = "abc-startup-workflow"
@@ -107,21 +109,10 @@ variable "step_function_name" {
 # S3 (Transaction input)
 # ------------------------
 
-# S3 bucket for transaction uploads
+# S3 bucket for transaction file uploads
 # Must be globally unique
 variable "s3_bucket_name" {
   type        = string
-  default = "2472737-usecase-bucket"
+  default     = "2472737-usecase-bucket"
   description = "Bucket used to upload transaction files"
-}
-
-
-# ------------------------
-# EventBridge
-# ------------------------
-
-# Role used by EventBridge to start Step Functions
-variable "eventbridge_role_name" {
-  type    = string
-  default = "eventbridge-stepfunctions-role"
 }
