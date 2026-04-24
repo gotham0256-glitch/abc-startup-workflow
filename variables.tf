@@ -116,6 +116,6 @@ variable "step_function_name" {
 # NOTE: Must be globally unique
 variable "s3_bucket_name" {
   type        = string
-  default     = "2472737-usecase-bucket"
+  default     = "2472737-trxn-usecase-bucket-"
   description = "Bucket used to upload transaction files"
 }
