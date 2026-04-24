@@ -19,7 +19,7 @@
 terraform {
   backend "s3" {
     # Dedicated S3 bucket for Terraform state
-    bucket = "abc-startup-terraform-state"
+    bucket = "2472526-abc-startup-terraform-state"
 
     # Path inside the bucket where state is stored
     key = "abc-startup/terraform.tfstate"

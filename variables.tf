@@ -95,7 +95,7 @@ variable "ecs_container_image" {
 # - EventBridge
 variable "iam_role_arn" {
   type    = string
-  default = "arn:aws:iam::165742852730:role/GitHubActions-IaC-Deployer"
+  default = "arn:aws:iam::208107893850:role/github-terraform-role"
 }
 
 # ------------------------
